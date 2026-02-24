@@ -3,7 +3,7 @@
 
 INSTALL_DIR="$HOME/.local/bin"
 SCRIPT_PATH="$(pwd)/view_docs.py"
-COMMAND_PATH="$INSTALL_DIR/view"
+COMMAND_PATH="$INSTALL_DIR/mdview"
 
 # Ensure install directory exists
 mkdir -p "$INSTALL_DIR"
@@ -15,8 +15,8 @@ chmod +x "$SCRIPT_PATH"
 ln -sf "$SCRIPT_PATH" "$COMMAND_PATH"
 
 echo "✅ Installation complete!"
-echo "🚀 You can now run 'view' from any terminal."
+echo "🚀 You can now run 'mdview' from any terminal."
 echo "   Usage:"
-echo "     view                  # Serve current directory"
-echo "     view folder_name      # Serve specific folder"
-echo "     view file_name.md     # Serve specific markdown file"
+echo "     mdview                  # Serve current directory"
+echo "     mdview folder_name      # Serve specific folder"
+echo "     mdview file_name.md     # Serve specific markdown file"
