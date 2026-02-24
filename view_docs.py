@@ -72,6 +72,7 @@ Examples:
 
 # Configuration
 PORT = int(os.environ.get('PORT', 8000))
+DEFAULT_FILE = 'README.md'
 
 # Determine docs directory:
 # 1. Command line argument (if provided)
@@ -80,8 +81,13 @@ PORT = int(os.environ.get('PORT', 8000))
 SCRIPT_DIR = Path(__file__).parent.resolve()
 
 if len(sys.argv) > 1 and not sys.argv[1].startswith('-'):
-    # Explicit directory provided
-    DOCS_DIR = Path(sys.argv[1]).resolve()
+    # Explicit path provided (can be file or directory)
+    target = Path(sys.argv[1]).resolve()
+    if target.is_file():
+        DOCS_DIR = target.parent
+        DEFAULT_FILE = target.name
+    else:
+        DOCS_DIR = target
 elif list(SCRIPT_DIR.glob('*.md')):
     # Script's directory has .md files - use it (most common case)
     DOCS_DIR = SCRIPT_DIR
@@ -506,9 +512,9 @@ class MarkdownHandler(http.server.SimpleHTTPRequestHandler):
             self.handle_update_check(parsed_path.query)
             return
         
-        # Default to README.md
+        # Default to configured DEFAULT_FILE (usually README.md)
         if path == '/' or path == '/index.html':
-            path = '/README.md'
+            path = '/' + DEFAULT_FILE
         
         # Remove leading slash
         if path.startswith('/'):
