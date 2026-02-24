@@ -25,4 +25,4 @@ fi
 chmod +x view_docs.py
 
 # Start the server
-python3 view_docs.py
+python3 view_docs.py "$@"
