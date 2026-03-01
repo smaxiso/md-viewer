@@ -104,11 +104,11 @@ if not DOCS_DIR.is_dir():
     sys.exit(1)
 
 # Check if directory has markdown files
-md_files_in_dir = list(DOCS_DIR.glob('*.md'))
+md_files_in_dir = list(DOCS_DIR.rglob('*.md'))
 if not md_files_in_dir:
     print(f"⚠️  Warning: No markdown files found in {DOCS_DIR}")
     print(f"   The directory listing will be shown instead.")
-    print(f"   💡 Tip: Specify a directory with .md files: python3 {Path(__file__).name} /path/to/docs")
+    print(f"   💡 Tip: Specify a directory with .md files: mdview /path/to/docs")
     print()
 
 # Get project name from directory for display
@@ -636,13 +636,13 @@ class MarkdownHandler(http.server.SimpleHTTPRequestHandler):
         
         # Get all .md files in the directory (excluding configured directories)
         md_files = []
-        for file_path in DOCS_DIR.glob('*.md'):
+        for file_path in DOCS_DIR.rglob('*.md'):
             # Check if any parent directory is in the exclude list
-            path_parts = [p.lower() for p in file_path.parts]
+            path_parts = [p.lower() for p in file_path.relative_to(DOCS_DIR).parts]
             if not any(excluded in path_parts for excluded in EXCLUDE_DIRS):
-                md_files.append(file_path.name)
+                md_files.append(file_path.relative_to(DOCS_DIR).as_posix())
         
-        # Sort files: README.md first, then alphabetically
+        # Sort files: README.md in root first, then alphabetically
         def sort_key(filename):
             if filename == 'README.md':
                 return (0, filename)
@@ -666,33 +666,43 @@ class MarkdownHandler(http.server.SimpleHTTPRequestHandler):
         return '\n'.join(nav_html)
     
     def format_display_name(self, filename):
-        """Format filename for display (e.g., HLD_HIGH_LEVEL_DESIGN.md -> HLD - High Level Design)"""
-        name = filename.replace('.md', '')
+        """Format filename for display (e.g., docs/API_REFERENCE.md -> docs / API Reference)"""
+        # Split into directory parts and the base filename
+        path_parts = filename.split('/')
+        base_name = path_parts[-1].replace('.md', '')
+        dir_prefix = ""
+        
+        if len(path_parts) > 1:
+            # We have directories in the path
+            dirs = " / ".join([p for p in path_parts[:-1]])
+            dir_prefix = f"<span style='color: #888; font-size: 0.9em;'>{dirs} / </span>"
         
         # Special case: README stays as is
-        if name.upper() == 'README':
-            return 'README'
-        
-        # Split by underscore
-        parts = name.split('_')
-        
-        # Check if first part is a short abbreviation (like HLD, LLD, API, etc.)
-        first_is_abbrev = len(parts) > 1 and parts[0].isupper() and len(parts[0]) <= 5
-        
-        formatted_parts = []
-        for i, part in enumerate(parts):
-            # Keep abbreviations as-is (all caps, short)
-            if part.isupper() and len(part) <= 5:
-                formatted_parts.append(part)
-            else:
-                # Title case for other parts
-                formatted_parts.append(part.capitalize())
-        
-        # Join with " - " after abbreviation prefix, space for the rest
-        if first_is_abbrev and len(formatted_parts) > 1:
-            return formatted_parts[0] + ' - ' + ' '.join(formatted_parts[1:])
+        if base_name.upper() == 'README':
+            formatted_base = 'README'
         else:
-            return ' '.join(formatted_parts)
+            # Split by underscore
+            parts = base_name.split('_')
+            
+            # Check if first part is a short abbreviation (like HLD, LLD, API, etc.)
+            first_is_abbrev = len(parts) > 1 and parts[0].isupper() and len(parts[0]) <= 5
+            
+            formatted_parts = []
+            for i, part in enumerate(parts):
+                # Keep abbreviations as-is (all caps, short)
+                if part.isupper() and len(part) <= 5:
+                    formatted_parts.append(part)
+                else:
+                    # Title case for other parts
+                    formatted_parts.append(part.capitalize())
+            
+            # Join with " - " after abbreviation prefix, space for the rest
+            if first_is_abbrev and len(formatted_parts) > 1:
+                formatted_base = formatted_parts[0] + ' - ' + ' '.join(formatted_parts[1:])
+            else:
+                formatted_base = ' '.join(formatted_parts)
+                
+        return dir_prefix + formatted_base
     
     def get_file_description(self, filename):
         """Get description/title from markdown file"""
