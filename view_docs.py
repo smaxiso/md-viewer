@@ -4,11 +4,11 @@ Local Markdown Documentation Viewer
 Serves markdown files as rendered HTML with navigation
 
 Usage:
-    python3 view-docs.py [directory]    # Serve specified directory
-    python3 view-docs.py                # Serve current directory
-    ./view-docs.py                      # If executable
+    mdview [directory]                 # Serve specified directory
+    mdview                             # Serve current directory
     
-    PORT=8001 python3 view-docs.py      # Use custom port
+    python3 view_docs.py [directory]   # Serve specified directory
+    python3 view_docs.py               # Serve current directory
 
 Then open: http://localhost:8000
 """
@@ -43,7 +43,7 @@ if len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help']:
     print("""
 Arguments:
     [directory]     Directory containing markdown files
-                    Default: script's directory (if it has .md files), otherwise current directory
+                    Default: current working directory
 
 Environment Variables:
     PORT            Server port (default: 8000)
@@ -52,12 +52,12 @@ Environment Variables:
                     Set to empty string to include all directories
 
 Examples:
-    # Run from anywhere - serves script's directory
-    python3 /path/to/view-docs.py
+    # Run from anywhere - serves current directory
+    mdview
     
     # Run with explicit directory
-    python3 view-docs.py ./docs
-    python3 view-docs.py /path/to/docs
+    mdview ./docs
+    mdview /path/to/docs
     
     # Custom port
     PORT=3000 python3 view-docs.py
@@ -88,12 +88,11 @@ if len(sys.argv) > 1 and not sys.argv[1].startswith('-'):
         DEFAULT_FILE = target.name
     else:
         DOCS_DIR = target
-elif list(SCRIPT_DIR.glob('*.md')):
-    # Script's directory has .md files - use it (most common case)
-    DOCS_DIR = SCRIPT_DIR
 else:
-    # Fallback to current directory
+    # Use current directory (most natural for terminal tool)
     DOCS_DIR = Path.cwd()
+    # If CWD has no md files but the script dir does, and we are NOT in the script dir, 
+    # we could potentially fallback to script dir, but let's keep it simple and stick to CWD.
 
 # Validate directory exists
 if not DOCS_DIR.exists():
