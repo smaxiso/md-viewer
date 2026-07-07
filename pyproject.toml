@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "md-viewer"
+version = "0.1.0"
+description = "A lightweight local markdown documentation viewer"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "Markdown>=3.0",
+    "Pygments>=2.0",
+    "Jinja2>=3.0"
+]
+
+[project.scripts]
+mdview = "md_viewer.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+md_viewer = ["*.html"]
