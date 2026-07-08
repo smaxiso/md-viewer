@@ -4,7 +4,6 @@ import mermaid from 'mermaid'
 import Editor from 'react-simple-code-editor'
 import Prism from 'prismjs'
 import 'prismjs/components/prism-markdown'
-import 'prismjs/themes/prism-dark.css'
 import './App.css'
 
 const CodeEditor = Editor.default || Editor
@@ -22,12 +21,19 @@ function App() {
   const [editContent, setEditContent] = useState('')
   
   const [expandedFolders, setExpandedFolders] = useState(new Set())
-  const [debouncedQuery, setDebouncedQuery] = useState('')
   const parentRef = useRef()
 
   // Settings Modal State
   const [view, setView] = useState(searchParams.get('view') || 'document') // 'document' | 'settings'
   const [excludeDirs, setExcludeDirs] = useState('')
+  const [theme, setTheme] = useState(() => localStorage.getItem('mdviewer_theme') || 'dark')
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('mdviewer_theme', theme)
+    mermaid.initialize({ startOnLoad: false, theme: theme === 'dark' ? 'dark' : 'default' })
+  }, [theme])
+  const [debouncedQuery, setDebouncedQuery] = useState('')
 
   useEffect(() => {
     const handlePopState = () => {
@@ -308,11 +314,11 @@ function App() {
               </div>
               <div className="form-group">
                 <label>Theme</label>
-                <select className="settings-select" disabled>
-                  <option>Dark Mode (Default)</option>
-                  <option>Light Mode</option>
+                <select className="settings-select" value={theme} onChange={e => setTheme(e.target.value)}>
+                  <option value="dark">Dark Mode (Default)</option>
+                  <option value="light">Light Mode</option>
                 </select>
-                <small>More settings coming soon.</small>
+                <small>Updates immediately.</small>
               </div>
               <div className="modal-actions" style={{justifyContent: 'flex-start', marginTop: '20px'}}>
                 <button className="btn-primary" onClick={handleSaveSettings}>Save & Reload Tree</button>
@@ -360,6 +366,7 @@ function App() {
                 </div>
               ) : (
                 <div 
+                  key={theme}
                   className="markdown-body" 
                   dangerouslySetInnerHTML={{ __html: fileData?.html || '' }} 
                 />

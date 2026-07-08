@@ -1,0 +1,32 @@
+INFO:     Started server process [32755]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
+Backend started, serving docs from /home/sumit/workspace
+INFO:     127.0.0.1:44952 - "GET /api/events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48700 - "GET /api/events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48694 - "GET /api/file?path=master_portal%2Fdocs%2FSYSTEM_DESIGN.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44626 - "GET /api/file?path=master_portal%2Fdocs%2FSYSTEM_DESIGN.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45814 - "GET /api/config HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48702 - "GET /api/nav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48712 - "GET /api/nav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46636 - "GET /api/nav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46694 - "GET /api/events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46662 - "GET /api/nav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46678 - "GET /api/file?path=master_portal%2Fdocs%2FSYSTEM_DESIGN.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46646 - "GET /api/file?path=master_portal%2Fdocs%2FSYSTEM_DESIGN.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47842 - "GET /api/events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47850 - "GET /api/nav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47874 - "GET /api/events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47860 - "GET /api/file?path=master_portal%2Fdocs%2FSYSTEM_DESIGN.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47876 - "GET /api/nav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47888 - "GET /api/file?path=master_portal%2Fdocs%2FSYSTEM_DESIGN.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45352 - "GET /api/events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45368 - "GET /api/nav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45398 - "GET /api/nav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45384 - "GET /api/file?path=master_portal%2Fdocs%2FSYSTEM_DESIGN.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45406 - "GET /api/file?path=master_portal%2Fdocs%2FSYSTEM_DESIGN.md HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [32755]
