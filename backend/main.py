@@ -200,6 +200,17 @@ async def get_file(path: str = ""):
             html_content,
             flags=re.DOTALL | re.IGNORECASE
         )
+        
+        # Fix double-escaped backslashes inside LaTeX math blocks
+        # python-markdown escapes \ to \\ in paragraph text, which breaks KaTeX
+        def fix_latex_escapes(m):
+            return m.group(0).replace('\\\\', '\\')
+        
+        # Fix display math $$...$$
+        html_content = re.sub(r'\$\$.*?\$\$', fix_latex_escapes, html_content, flags=re.DOTALL)
+        # Fix inline math $...$  (but not $$)
+        html_content = re.sub(r'(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)', fix_latex_escapes, html_content)
+        
         return html_content
 
     html_content = await loop.run_in_executor(None, parse_markdown, md_content)

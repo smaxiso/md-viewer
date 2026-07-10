@@ -4,6 +4,8 @@ import mermaid from 'mermaid'
 import Editor from 'react-simple-code-editor'
 import Prism from 'prismjs'
 import 'prismjs/components/prism-markdown'
+import 'katex/dist/katex.min.css'
+import renderMathInElement from 'katex/contrib/auto-render'
 import './App.css'
 
 const CodeEditor = Editor.default || Editor
@@ -161,6 +163,8 @@ function App() {
     }
   }, [currentFile])
 
+  const contentRef = useRef(null)
+
   useEffect(() => {
     if (mode === 'rendered' && fileData?.html && view === 'document') {
       setTimeout(() => {
@@ -169,9 +173,26 @@ function App() {
         } catch (e) {
           console.error("Mermaid error", e)
         }
+        // Render LaTeX math expressions
+        if (contentRef.current) {
+          try {
+            const renderMath = renderMathInElement.default || renderMathInElement
+            renderMath(contentRef.current, {
+              delimiters: [
+                { left: '$$', right: '$$', display: true },
+                { left: '$', right: '$', display: false },
+                { left: '\\(', right: '\\)', display: false },
+                { left: '\\[', right: '\\]', display: true },
+              ],
+              throwOnError: false,
+            })
+          } catch (err) {
+            console.error("MdViewer KaTeX error:", err)
+          }
+        }
       }, 0)
     }
-  }, [fileData?.html, mode, view])
+  }, [fileData?.html, mode, view, theme])
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -383,6 +404,7 @@ function App() {
                 </div>
               ) : (
                 <div 
+                  ref={contentRef}
                   key={theme}
                   className="markdown-body" 
                   dangerouslySetInnerHTML={{ __html: fileData?.html || '' }} 
