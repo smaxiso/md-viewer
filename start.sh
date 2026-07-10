@@ -53,4 +53,4 @@ else
 fi
 echo "========================================================"
 echo ""
-echo "To stop the services, run: ./stop.sh"
+echo "To stop the services, run: mdview-stop"

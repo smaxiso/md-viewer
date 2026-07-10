@@ -58,6 +58,22 @@ function App() {
     }
   }, [currentFile, mode, view])
 
+  const handlePrint = () => {
+    if (mode !== 'rendered') setMode('rendered')
+    setTimeout(() => window.print(), 100)
+  }
+
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault()
+        handlePrint()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [mode])
+
   useEffect(() => {
     mermaid.initialize({ startOnLoad: false, theme: 'dark' })
   }, [])
@@ -335,6 +351,7 @@ function App() {
                   <button className={`toggle-btn ${mode === 'raw' ? 'active' : ''}`} onClick={() => setMode('raw')}>Raw</button>
                   <button className={`toggle-btn ${mode === 'edit' ? 'active' : ''}`} onClick={() => setMode('edit')}>Edit</button>
                 </div>
+                <button className="btn-print" onClick={handlePrint} title="Print document (Ctrl+P)">🖨️ Print</button>
               </div>
             </div>
 
