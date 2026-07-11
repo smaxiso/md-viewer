@@ -175,6 +175,23 @@ function App() {
         }
         // Render LaTeX math expressions
         if (contentRef.current) {
+          // Resolve relative image paths to the backend media endpoint
+          const imgs = contentRef.current.querySelectorAll('img');
+          imgs.forEach(img => {
+            const src = img.getAttribute('src');
+            if (src && !src.startsWith('http') && !src.startsWith('data:') && !src.startsWith('/api/')) {
+              const parts = (currentFile || '').split('/');
+              parts.pop(); // Remove the current markdown filename
+              const srcParts = src.split('/');
+              for (const p of srcParts) {
+                if (p === '..') parts.pop();
+                else if (p !== '.') parts.push(p);
+              }
+              const resolvedPath = parts.join('/');
+              img.src = `/api/media?path=${encodeURIComponent(resolvedPath)}`;
+            }
+          });
+
           try {
             const renderMath = renderMathInElement.default || renderMathInElement
             renderMath(contentRef.current, {

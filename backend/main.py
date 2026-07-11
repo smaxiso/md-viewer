@@ -237,6 +237,23 @@ async def save_file(req: EditRequest):
     nav_cache["mtime"] = 0
     return {"status": "ok"}
 
+from fastapi.responses import FileResponse
+import mimetypes
+
+@app.get("/api/media")
+async def get_media(path: str):
+    file_path = (cfg.docs_dir / path).resolve()
+    try:
+        file_path.relative_to(cfg.docs_dir.resolve())
+    except ValueError:
+        raise HTTPException(status_code=403, detail="Access Denied")
+
+    if not file_path.exists() or not file_path.is_file():
+        raise HTTPException(status_code=404, detail="Media file not found")
+
+    mime_type, _ = mimetypes.guess_type(str(file_path))
+    return FileResponse(path=file_path, media_type=mime_type)
+
 @app.get("/api/search")
 async def search(q: str):
     import subprocess

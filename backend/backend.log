@@ -1,10 +1,4 @@
-INFO:     Started server process [27127]
+INFO:     Started server process [6243]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
-Backend started, serving docs from /home/sumit/workspace/cb-buysmart
-INFO:     127.0.0.1:47156 - "GET /api/events HTTP/1.1" 200 OK
-INFO:     127.0.0.1:47148 - "GET /api/nav HTTP/1.1" 200 OK
-INFO:     127.0.0.1:47162 - "GET /api/nav HTTP/1.1" 200 OK
-INFO:     127.0.0.1:47154 - "GET /api/file?path=docs%2Fbuying%2Funified_strategy.md HTTP/1.1" 200 OK
-INFO:     127.0.0.1:45628 - "GET /api/file?path=docs%2Fbuying%2Funified_strategy.md HTTP/1.1" 200 OK
