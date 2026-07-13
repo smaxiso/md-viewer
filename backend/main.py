@@ -169,6 +169,18 @@ async def get_file(path: str = ""):
         
         md_content_fixed = content.replace('\r\n', '\n').replace('\r', '\n')
         lines = md_content_fixed.split('\n')
+        
+        # Pre-process lists to ensure they have a blank line before them (standard Markdown requirement)
+        list_fixed_lines = []
+        for i, line in enumerate(lines):
+            is_list_item = re.match(r'^\s*[*+-]\s+', line) or re.match(r'^\s*\d+\.\s+', line)
+            if is_list_item and i > 0 and lines[i-1].strip() != '':
+                prev_is_list = re.match(r'^\s*[*+-]\s+', lines[i-1]) or re.match(r'^\s*\d+\.\s+', lines[i-1])
+                if not prev_is_list:
+                    list_fixed_lines.append('')
+            list_fixed_lines.append(line)
+        lines = list_fixed_lines
+
         processed_lines = []
         in_block = False
         indent = 0
@@ -244,12 +256,23 @@ import mimetypes
 async def get_media(path: str):
     file_path = (cfg.docs_dir / path).resolve()
     try:
+        # Check if it's within docs_dir
         file_path.relative_to(cfg.docs_dir.resolve())
     except ValueError:
         raise HTTPException(status_code=403, detail="Access Denied")
 
     if not file_path.exists() or not file_path.is_file():
-        raise HTTPException(status_code=404, detail="Media file not found")
+        # Fallback: if 'docs/images/sawtooth.png' fails, try 'images/sawtooth.png' in the root
+        parts = path.split('/')
+        found = False
+        for i in range(1, len(parts)):
+            fallback = (cfg.docs_dir / '/'.join(parts[i:])).resolve()
+            if fallback.exists() and fallback.is_file():
+                file_path = fallback
+                found = True
+                break
+        if not found:
+            raise HTTPException(status_code=404, detail="Media file not found")
 
     mime_type, _ = mimetypes.guess_type(str(file_path))
     return FileResponse(path=file_path, media_type=mime_type)
