@@ -1,6 +1,0 @@
-INFO:     Started server process [7448]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
-Backend started, serving docs from /home/sumit/workspace/cb-buysmart
-INFO:     127.0.0.1:48536 - "GET /api/events HTTP/1.1" 200 OK
